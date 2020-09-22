@@ -8,10 +8,10 @@ const Product = require('../models/product')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
-const customErrors = require('../../lib/custom_errors')
+// const customErrors = require('../../lib/custom_errors')
 
 // we'll use this function to send 404 when non-existant document is requested
-const handle404 = customErrors.handle404
+// const handle404 = customErrors.handle404
 // we'll use this function to send 401 when a user tries to modify a resource
 // that's owned by someone else
 // const requireOwnership = customErrors.requireOwnership
@@ -43,15 +43,17 @@ router.get('/products', (req, res, next) => {
     .catch(next)
 })
 
-// SHOW
-// GET /products/5a7db6c74d55bc51bdf39793
-router.get('/products/:id', (req, res, next) => {
-  // req.params.id will be set based on the `:id` in the route
-  Product.findById(req.params.id)
-    .then(handle404)
-    // if `findById` is succesful, respond with 200 and "product" JSON
-    .then(product => res.status(200).json({ product: product.toObject() }))
-    // if an error occurs, pass it to the handler
+// CREATE
+// POST /products
+router.post('/products', (req, res, next) => {
+  Product.create(req.body.product)
+    // respond to succesful `create` with status 201 and JSON of new "product"
+    .then(product => {
+      res.status(201).json({ product: product.toObject() })
+    })
+    // if an error occurs, pass it off to our error handler
+    // the error handler needs the error message and the `res` object so that it
+    // can send an error message back to the client
     .catch(next)
 })
 
