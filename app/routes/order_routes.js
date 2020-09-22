@@ -48,7 +48,6 @@ router.post('/orders', requireToken, (req, res, next) => {
   User.findById(req.user._id)
     .then(user => {
       user.orders.push({date: new Date(), active: true})
-      console.log('user before we save it', user)
       return user.save()
     })
   // respond to succesful `create` with status 201 and JSON of all orders for that user
